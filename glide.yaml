@@ -1,0 +1,3 @@
+package: github.com/bruschill/mut
+import:
+- package: github.com/fatih/color

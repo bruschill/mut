@@ -107,8 +107,6 @@ func (r *Repo) checkoutBranch(branchName string) {
 
 //Update updates repo's master branch and returns repo back to original state before the update
 func (r *Repo) Update() *UpdateStatus {
-	statusMsg := ""
-
 	r.stashChanges()
 	r.checkoutBranch("master")
 
@@ -117,14 +115,16 @@ func (r *Repo) Update() *UpdateStatus {
 
 	out, err := gc.Output()
 
+	if err != nil {
+		statusMsg := "An error occurred when attempting to update " + r.Name + "\n"
+		return &UpdateStatus{Success: false, Message: statusMsg}
+	}
+
+	statusMsg := ""
 	if strings.Contains(out, "is up to date") {
 		statusMsg = "no changes."
 	} else {
 		statusMsg = "updated."
-	}
-
-	if err != nil {
-		log.Fatalf("An error occurred when attempting to update %s\n", r.Name)
 	}
 
 	r.checkoutBranch(r.origBranch)

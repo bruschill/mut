@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/bruschill/mut/lib/repo"
 	"log"
 	"os"
+	"strings"
 	"sync"
+
+	"github.com/bruschill/mut/lib/repo"
+	"github.com/fatih/color"
 )
 
 func updateRepos() {
@@ -31,6 +34,11 @@ func updateRepos() {
 	//initialize WaitGroup
 	var wg sync.WaitGroup
 
+	//create color printing functions
+	var successString = color.New(color.FgGreen, color.Bold).SprintFunc()
+	var unchangedString = color.New(color.FgWhite).SprintFunc()
+	var errorString = color.New(color.FgRed, color.Bold).SprintFunc()
+
 	//iterate through all repo dirs and update them
 	for _, repoDir := range repoDirs {
 		wg.Add(1)
@@ -38,7 +46,15 @@ func updateRepos() {
 			r := repo.NewRepo(repoDirName, rootPath)
 			updateStatus := r.Update()
 
-			fmt.Printf("%s: %s\n", r.Name, updateStatus.Message)
+			if updateStatus.Success {
+				if strings.Contains(updateStatus.Message, "updated") {
+					fmt.Printf("%s: %s\n", r.Name, successString(updateStatus.Message))
+				} else {
+					fmt.Printf("%s: %s\n", r.Name, unchangedString(updateStatus.Message))
+				}
+			} else {
+				fmt.Printf("%s: %s\n", r.Name, errorString(updateStatus.Message))
+			}
 
 			wg.Done()
 		}(repoDir)
