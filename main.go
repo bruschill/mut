@@ -35,7 +35,7 @@ func updateRepos() {
 	var wg sync.WaitGroup
 
 	//create color printing functions
-	var successString = color.New(color.FgGreen, color.Bold).SprintFunc()
+	var successString = color.New(color.FgGreen).SprintFunc()
 	var unchangedString = color.New(color.FgWhite).SprintFunc()
 	var errorString = color.New(color.FgRed, color.Bold).SprintFunc()
 
