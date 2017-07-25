@@ -11,7 +11,7 @@ import (
 	"github.com/fatih/color"
 )
 
-//UpdateRepos fuck
+//UpdateRepos updates all repos in the $MBC_WORK_ROOT directory
 func UpdateRepos() {
 	//get $MBC_WORK_ROOT env var
 	rootPath := os.ExpandEnv("$MBC_WORK_ROOT")
